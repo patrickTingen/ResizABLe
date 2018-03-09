@@ -1,0 +1,6 @@
+*.bak
+*.r
+debugger.pref
+protrace*
+.project
+.propath

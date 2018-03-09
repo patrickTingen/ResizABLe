@@ -10,6 +10,11 @@ This program provides an easy way of making your window resize properly. Just ti
 ## What this program cannot do
 Straightforward windows are no problem, nor embedded frames. Problems arise when you are using tabs since the program can not (yet) handle these. ADM programs should work fine, as long as they don't have tabs. 
 
+## How to use it?
+1. make sure 'resize' is checked in your window properties
+2. run this library persistent from the main block of your program
+3. have fun!
+
 ## How does it work?
 The program maintains a temp-table with the original x and y position, as well as the width and heigth of all widgets. At the start of your program it determines the original size of your window. By defining a WINDOW-RESIZED trigger it keeps track of changes in size and when it is resized, it repositions and resizes all widgets relative to the starting size of the window.
 
