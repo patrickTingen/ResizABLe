@@ -14,6 +14,7 @@
 
   History:
   08-03-2018 PT Created
+  11-03-2018 PT Resize rules for LABELS and TEXT Widgets #1
   ----------------------------------------------------------------------*/
 
 DEFINE INPUT PARAMETER phWindow AS HANDLE NO-UNDO.
@@ -142,7 +143,13 @@ PROCEDURE resizeFrame:
     IF hWidget:TYPE = 'frame' THEN
       RUN resizeFrame(phFrame, hWidget, pdFactorHor, pdFactorVer). 
 
-    ASSIGN hWidget:WIDTH-PIXELS = TRUNCATE(bWidget.ttWidth * pdFactorHor,0).
+    IF LOOKUP(hWidget:TYPE,"text,literal") = 0 THEN
+      ASSIGN hWidget:WIDTH-PIXELS = TRUNCATE(bWidget.ttWidth * pdFactorHor,0).
+
+    /* Reposition labels */
+    IF CAN-QUERY(hWidget,'SIDE-LABEL-HANDLE') 
+      AND VALID-HANDLE(hWidget:SIDE-LABEL-HANDLE) THEN
+      hWidget:SIDE-LABEL-HANDLE:X = hWidget:X - FONT-TABLE:GET-TEXT-WIDTH-PIXELS(hWidget:SIDE-LABEL-HANDLE:SCREEN-VALUE,hWidget:FONT) - 6.
     
     IF LOOKUP(hWidget:TYPE,"fill-in,text,literal,button") = 0 THEN
       hWidget:HEIGHT-PIXELS = TRUNCATE(bWidget.ttHeight * pdFactorVer,0) NO-ERROR.
