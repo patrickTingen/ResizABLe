@@ -15,10 +15,27 @@ Straightforward windows are no problem, nor embedded frames. Problems arise when
 2. run this library persistent from the main block of your program
 3. have fun!
 
+Run the program like this:
+```
+  RUN resizable.p ({&WINDOW-NAME}:HANDLE).
+```
+
 ## How does it work?
-The program maintains a temp-table with the original x and y position, as well as the width and heigth of all widgets. At the start of your program it determines the original size of your window. By defining a WINDOW-RESIZED trigger it keeps track of changes in size and when it is resized, it repositions and resizes all widgets relative to the starting size of the window.
+The program will make itself persistent and attach a dynamic resize trigger to your window.
+It maintains a temp-table with the original x and y position, as well as the width and heigth of all widgets. At the start of your program it determines the original size of your window. By defining a WINDOW-RESIZED trigger it keeps track of changes in size and when it is resized, it repositions and resizes all widgets relative to the starting size of the window.
 
 The trick is that you have to keep track of exactly *when* to resize the frame. If the window grows, resize the frame first and then the contents, if the frame shrinks, do the opposite. 
+
+## Existing ON WINDOW-RESIZED event
+If you have an already existing event for WINDOW-RESIZED, then the one in ResizABLe will not fire. You can force this by calling it explicitely. Save the handle of the persistent library when you start it:
+```
+  DEFINE VARIABLE ghResizable AS HANDLE NO-UNDO.
+  RUN resizable.p PERSISTENT SET ghResizable ({&WINDOW-NAME}:HANDLE).
+```
+Then run it from inside your own WINDOW-RESIZED trigger:
+```
+  RUN WindowResized IN ghResizable(INPUT {&window-name}:HANDLE).
+```
 
 ## Feedback appreciated
 If you use the library and have some feedback for me, don't hesitate; I'd love to have this code improved. 

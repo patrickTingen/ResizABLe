@@ -15,6 +15,7 @@
   History:
   08-03-2018 PT Created
   11-03-2018 PT Resize rules for LABELS and TEXT Widgets #1
+  04-06-2025 PT Make the library persistent if it is not already
   ----------------------------------------------------------------------*/
 
 DEFINE INPUT PARAMETER phWindow AS HANDLE NO-UNDO.
@@ -33,6 +34,26 @@ DEFINE VARIABLE giOrgHeight     AS INTEGER NO-UNDO.
 DEFINE VARIABLE giOrgWidth      AS INTEGER NO-UNDO.
 DEFINE VARIABLE gdPrevFactorHor AS DECIMAL NO-UNDO.
 DEFINE VARIABLE gdPrevFactorVer AS DECIMAL NO-UNDO.
+DEFINE VARIABLE ghThisProcedure AS HANDLE    NO-UNDO.
+
+// Make this library persistent if it is not already
+IF NOT THIS-PROCEDURE:PERSISTENT THEN
+DO:
+  PUBLISH 'getResizableHandle' (OUTPUT ghThisProcedure).
+  IF NOT VALID-HANDLE(ghThisProcedure) THEN 
+  DO:
+    RUN c:\temp\resizable.p PERSISTENT (phWindow).
+    RETURN. 
+  END.
+END.
+
+SUBSCRIBE TO 'getResizableHandle' ANYWHERE.
+
+PROCEDURE getResizableHandle:
+  DEFINE OUTPUT PARAMETER phProcedure AS HANDLE NO-UNDO.
+  phProcedure = THIS-PROCEDURE:HANDLE.
+END PROCEDURE. 
+
 
 /* Init */
 ASSIGN 
